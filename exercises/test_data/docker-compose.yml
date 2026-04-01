@@ -1,0 +1,44 @@
+services:
+  tests:
+    build:
+      context: .
+      target: tests
+    volumes:
+      - ./wordlestats:/app/wordlestats
+      - ./wordlestats-tests:/app/wordlestats-tests
+    command: 
+      - sh
+      - -c
+      - |
+        gradle :wordlestats-tests:test --console=plain --no-daemon
+        touch /tmp/lastrun
+        while true; do
+          sleep 1
+          if find ./wordlestats/src ./wordlestats-tests/src -name "*.java" -type f -newer /tmp/lastrun 2>/dev/null | grep -q .; then
+            clear
+            echo "Changes detected, rerunning tests..."
+            gradle :wordlestats-tests:test --console=plain --no-daemon
+            touch /tmp/lastrun
+          fi
+        done
+
+  cli:
+    build:
+      context: .
+      target: cli
+    stdin_open: true
+    tty: true
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+    volumes:
+      - ./wordlestats:/app/wordlestats
+      - ./wordlestats-tests:/app/wordlestats-tests
+    # The entrypoint checks if any arguments were passed.
+    # If so, it runs the CLI via gradle with those arguments (this is faster).
+    # If not, it builds and runs the CLI directly (slower, but lets the process read stdin for interactive mode).
+    entrypoint:
+      - "sh"
+      - "-c"
+      - "if [ -n \"$*\" ]; then gradle :wordlestats-cli:run --quiet --console=plain --args=\"$*\"; else gradle :wordlestats-cli:installDist --quiet --no-daemon && exec ./wordlestats-cli/build/install/wordlestats-cli/bin/wordlestats-cli; fi"
+      - "sh"

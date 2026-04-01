@@ -1,0 +1,5 @@
+rootProject.name = 'wordlestats-parent'
+
+include 'wordlestats'
+include 'wordlestats-tests'
+include 'wordlestats-cli'

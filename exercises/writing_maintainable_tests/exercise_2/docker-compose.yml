@@ -1,0 +1,8 @@
+services:
+  tests:
+    image: gradle:8.13-jdk21
+    volumes:
+      - ./src:/src
+      - ./build.gradle:/build.gradle
+    working_dir: /
+    command: bash -c "gradle test --continuous --console=rich --warning-mode none"

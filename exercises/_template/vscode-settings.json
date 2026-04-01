@@ -1,0 +1,12 @@
+{
+    "files.autoSave": "off",
+    "redhat.telemetry.enabled": false,
+    "java.import.projectSelection": "automatic",
+    "java.import.gradle.version": "9.4.1",
+    "java.import.exclusions": [
+        "**/exercises/**",
+        "!**/exercises/<EXERCISE_DIR>"
+    ],
+    "java.compile.nullAnalysis.mode": "automatic",
+    "extensions.ignoreRecommendations": true
+}

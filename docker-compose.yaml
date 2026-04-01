@@ -1,0 +1,16 @@
+services:
+  sync:
+    image: "ghcr.io/skiller-whale/learnersync:0.2.1"
+    network_mode: "host"
+    environment:
+      SERVER_URL: "https://train.skillerwhale.com/"
+      SW_RUNNING_IN_HOSTED_ENV:
+      WATCHER_BASE_PATH: "/exercises"
+      ATTENDANCE_ID_FILE: "/attendance_id"
+      WATCHED_EXTS: ".java"
+      IGNORE_MATCH: ".git"
+    volumes:
+      - ./exercises:/exercises:ro
+      - ./attendance_id:/attendance_id:ro
+    tty: true
+    stdin_open: true

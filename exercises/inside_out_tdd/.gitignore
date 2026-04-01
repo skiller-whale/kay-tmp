@@ -1,0 +1,12 @@
+# Gradle
+.gradle/
+build/
+
+# Project outputs
+bin/
+out/
+
+# Local/editor files
+.DS_Store
+.vscode/
+.idea/

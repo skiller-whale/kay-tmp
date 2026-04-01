@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'jvm-test-suite'
+}
+
+group = 'com.skillerwhale'
+version = '1.0.0'
+description = 'Testing at different layers exercise'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.10.1'
+    htmlUnitVersion = '4.15.0'
+}
+
+ configurations {
+    mockitoAgent
+ }
+
+dependencies {
+    implementation "org.xerial:sqlite-jdbc:3.44.1.0"
+    testImplementation "org.htmlunit:htmlunit:${htmlUnitVersion}"
+    testImplementation "org.mockito:mockito-core:5.+"
+    testImplementation "org.mockito:mockito-junit-jupiter:5+"
+    mockitoAgent("org.mockito:mockito-core:5.+") { transitive = false }
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+            dependencies {
+                implementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+                implementation "org.assertj:assertj-core:3.24.2"
+                implementation "org.slf4j:slf4j-simple:2.0.17"
+            }
+
+            targets {
+                all {
+                    testTask.configure {
+                        testLogging {
+                            events "passed", "skipped", "failed"
+                            exceptionFormat = 'full'
+                            showStandardStreams = true
+                            showExceptions = true
+                            showCauses = true
+                            showStackTraces = true
+
+                            afterSuite { desc, result ->
+                                if (!desc.parent) {
+                                    def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                                    def startItem = '|  ', endItem = '  |'
+                                    def repeatLength = startItem.length() + output.length() + endItem.length()
+                                    println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks {
+    test {
+        jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
+    }
+}
+
+application {
+    mainClass = 'com.skillerwhale.wordle.WordleApplication'
+}

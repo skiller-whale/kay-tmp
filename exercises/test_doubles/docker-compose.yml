@@ -1,0 +1,19 @@
+services:
+  dev-server:
+    build: .
+    ports:
+      - "3001:3001"
+    volumes:
+      - "./src:/app/src"
+      - "~/.m2:/root/.m2"
+    working_dir: /app
+    command: ["watchexec", "--watch", "src", "--exts", "java", "--restart", "gradle run"]
+    init: true # to ensure signal handling works (and you can kill the container with ctrl-c)
+  tests:
+    build: .
+    volumes:
+      - "./src:/app/src"
+      - "~/.m2:/root/.m2"
+    working_dir: /app
+    command: gradle test --continuous
+    init: true # to ensure signal handling works (and you can kill the container with ctrl-c)

@@ -1,0 +1,12 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClass = 'com.skillerwhale.wordlestats.cli.Main'
+}
+
+dependencies {
+    implementation project(':wordlestats')
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+}

@@ -1,0 +1,30 @@
+services:
+  exercises:
+    build: .
+    volumes:
+      - ./src:/inside_out_tdd/src
+      - ./build.gradle:/inside_out_tdd/build.gradle
+      - ./gradle.properties:/inside_out_tdd/gradle.properties
+      - ./scripts:/inside_out_tdd/scripts
+    working_dir: /inside_out_tdd
+    tty: true
+    command:
+      - -lc
+      - |
+        echo 'trap "echo ‼️ You just quit the exercises terminal.; echo To get it back run: docker compose run exercises" EXIT' >> /root/.bashrc
+        echo "To run the tests:"
+        echo "  gradle test"
+        echo "Or for watch mode:"
+        echo "  gradle test --continuous"
+        exec /bin/bash -l
+  tests:
+    build: .
+    volumes:
+      - ./src:/inside_out_tdd/src
+      - ./build.gradle:/inside_out_tdd/build.gradle
+      - ./gradle.properties:/inside_out_tdd/gradle.properties
+      - ./scripts:/inside_out_tdd/scripts
+    working_dir: /inside_out_tdd
+    command:
+      - -c
+      - gradle test --continuous --console=rich --warning-mode none

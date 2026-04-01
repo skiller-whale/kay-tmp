@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cmd=(gradle --quiet run)
+if [ "$#" -gt 0 ]; then
+    cmd+=(--args="$*")
+fi
+
+"${cmd[@]}"
